@@ -44,6 +44,34 @@ export default function Chatbot() {
     }
   }, [selectedThreadId]);
 
+
+  
+  const createNewThread = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/threads/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({}), 
+      });
+
+      const newThread = await response.json();
+      console.log('New thread created:', newThread);
+
+    
+      setThreads((prev) => [...prev, newThread]);
+
+     
+      setSelectedThreadId(newThread.id);
+
+      
+      setMessages([]);
+    } catch (error) {
+      console.error('Error creating new thread:', error);
+    }
+  };
+
   const sendMessage = async () => {
     if (!input.trim()) return;
 
@@ -103,6 +131,13 @@ export default function Chatbot() {
             Thread {thread.id}
           </div>
         ))}
+
+        <button
+          className="w-full mt-4 p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          onClick={createNewThread}
+        >
+          + New Chat
+        </button>
       </div>
 
       <div className="w-2/3 flex flex-col p-4">

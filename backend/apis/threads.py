@@ -1,11 +1,16 @@
 from fastapi import FastAPI, Depends, APIRouter
 from sqlalchemy.orm import Session
 
-from db.db_engine import get_db, get_threads_db, create_message_db, get_messages_db
+from db.db_engine import get_db, get_threads_db, create_message_db, get_messages_db, create_thread_db
 from db.models import TextMessage
 
 threads_router = APIRouter()
 
+# Create a new thread 
+@threads_router.post("/threads")
+async def create_new_thread(db: Session = Depends(get_db)):
+    print("Creating new chat thread")
+    return await create_thread_db(db)
 
 # Get all Threads
 ## Add user in input if required.

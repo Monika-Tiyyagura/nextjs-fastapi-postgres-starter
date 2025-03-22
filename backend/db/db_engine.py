@@ -38,16 +38,14 @@ async def get_threads_db(db: AsyncSession):
     result = await db.execute(stmt)
     return [{"id": thread.id} for thread in result.scalars().all()] if result else []
 
-async def create_message_db(thread_id: int, content: str, added_by_user: bool, db: AsyncSession):
+async def get_thread_by_id(thread_id:int, db: AsyncSession):
     stmt = select(Thread).where(Thread.id == thread_id)
     result = await db.execute(stmt)
-    thread = result.scalars().first()
+    return result.scalars().first()
 
-    if not thread:
-        thread = await create_thread_db(db)
-
+async def create_message_db(thread_id: int, content: str, added_by_user: bool, db: AsyncSession):
     new_message = TextMessage(
-        id=random.randrange(1000),
+        id=random.randint(0, 2_147_483_647),
         thread_id=thread_id,
         content=content,
         is_request=added_by_user
